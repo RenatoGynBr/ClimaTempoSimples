@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dropdown with Ajax</title>
+
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>*@
+
+<script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Home/getCities",
+                data: "{}",
+                success: function (data) {
+                    var s = '<option value="-1">Selecione a cidade para pesquisar...</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        s += '<option value="' + data[i].CityID + '">' + data[i].CityName + '</option>';
+                    }
+                    $("#citiesDropdown").html(s);
+                }
+            });
+        });
+
+    function getForecast() {
+        var strSelected = "";
+        $("#citiesDropdown option:selected").each(function () {
+            strSelected += $(this)[0].value;
+        });
+        var url = "/Home/GetForecast/" + strSelected;
+        console.log(url);
+        alert(url)
+    }
+
+</script>
+</head>
+<body>
+    <form id="myForm">
+        <label for="citiesDropdown"><b>Cidades</b></label>
+        <select class="form-control" id="citiesDropdown" name="citiesDropdown"></select>
+    </form>
+    <button type="button" class="btn btn-primary" onclick="getForecast()">Button</button>
+</body>
+</html>

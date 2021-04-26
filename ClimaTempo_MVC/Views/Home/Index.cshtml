@@ -1,0 +1,139 @@
+﻿@model ClimaTempo_MVC.Models.ResultViewModel
+
+@{
+    ViewBag.Title = "Clima Tempo Simples";
+}
+
+<h1>Clima Tempo Simples</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Cidades mais quentes hoje</h2>
+        <table class="table table-bordered responsive" width="100%">
+            <thead class="thin-border-bottom">
+                <tr>
+                    <th>Nome da Cidade</th>
+                    <th>Temperatura Máxima</th>
+                </tr>
+            </thead>
+            @foreach (var itemMax in Model.PrevisaoMax)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemMax.Cidade.Nome), @Html.DisplayFor(modelItem => itemMax.Cidade.Estado.UF)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemMax.TemperaturaMaxima)@Html.Raw("ºC")
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h2>Cidades mais frias hoje</h2>
+        <table class="table table-bordered responsive" width="100%">
+            <thead class="thin-border-bottom">
+                <tr>
+                    <th>Nome da Cidade</th>
+                    <th>Temperatura Mínima</th>
+                </tr>
+            </thead>
+            @foreach (var itemMin in Model.PrevisaoMin)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemMin.Cidade.Nome), @Html.DisplayFor(modelItem => itemMin.Cidade.Estado.UF)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemMin.TemperaturaMinima)@Html.Raw("ºC")
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    @*<form id="frmSomething" method="post">*@
+        <div class="col-md-4">
+            <select class="form-control" id="citiesDropdown" name="citiesDropdown"></select>
+        </div>
+
+    @*</form>*@
+
+    <div class="col-md-2">
+        <a href="javascript:void(0);" onclick="getForecast();" class="btn btn-primary">>Buscar &raquo;</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>@ViewBag.Descricao</h2>
+    </div>
+</div>
+
+
+<div class="row">
+
+    @foreach (var item in Model.PrevisaoProximosDias)
+    {
+
+        <div class="col-sm-2 col-lg-2 col-md-2">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4>@Convert.ToDateTime(item.DataPrevisao).ToString("dd/MM/yyyy")</h4>
+                    <h4>@Convert.ToDateTime(item.DataPrevisao).ToString("dddd")</h4>
+                    <img src="@Url.Content("~/Content/images/Clima_" + item.Clima +".jpg")" alt="Image" />
+                    <h4>@Html.DisplayFor(modelItem => item.Clima)</h4>
+                    <h4>
+                        @Html.Raw("Min ")
+                        @Html.DisplayFor(modelItem => item.TemperaturaMinima)@Html.Raw("ºC")
+                    </h4>
+                    <h4>
+                        @Html.Raw("Max ")
+                        @Html.DisplayFor(modelItem => item.TemperaturaMaxima)@Html.Raw("ºC")
+                    </h4>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Home/getCities",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="-1">Selecione a cidade para pesquisar...</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].CityID + '">' + data[i].CityName + '</option>';
+                }
+                $("#citiesDropdown").html(s);
+            }
+        });
+    });
+
+    function getForecast() {
+        var strSelected = "";
+        $("#citiesDropdown option:selected").each(function () {
+            strSelected += $(this)[0].value;
+        });
+        var url = "/Home/Index/" + strSelected;
+        console.log(url);
+        //alert(url);
+
+        document.location.href = url;
+    }
+
+</script>
+
+
