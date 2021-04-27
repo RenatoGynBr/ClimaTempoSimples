@@ -10,3 +10,6 @@ Instruções:
 3 - No web.config faça as alterações necessárias para conectar com o Database;
 
 4 - Execute F5.
+
+![alt text](https://github.com/RenatoGynBr/ClimaTempoSimples/blob/master/Screenshot_ClimaTempoByRenatoCavalcante.jpg)
+
